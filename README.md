@@ -5,7 +5,7 @@ Authentication microservice for the ECI-Bienestar platform. Handles user authent
 ## 👥 Authors
 
 * Andrés Felipe Chavarro Plazas
-* Andrés Jacobo Sepulveda Sánchez
+* Andrés Jacobo Sepúlveda Sánchez
 * Camilo Andrés Fernández Días
 * Jesús Alfonso Pinzón Vega
 
