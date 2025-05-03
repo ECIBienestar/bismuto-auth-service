@@ -2,6 +2,8 @@ package java.edu.eci.cvds.auth.service;
 
 import java.edu.eci.cvds.auth.models.User;
 import java.edu.eci.cvds.auth.models.Role;
+import java.edu.eci.cvds.auth.dto.UserResponseDTO;
+import java.edu.eci.cvds.auth.dto.UserRegisterDTO;
 import java.edu.eci.cvds.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,14 +27,10 @@ public class UserService {
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(hash(userDto.getPassword()));
-        return userRepository.save(user);
-    }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         if (user.getRole() == null) {
-            user.setRole(Role.STUDENT); // Default role
+            user.setRole(Role.STUDENT);
         }
 
         return userRepository.save(user);

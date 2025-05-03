@@ -2,6 +2,7 @@ package java.edu.eci.cvds.auth.controller;
 
 import java.edu.eci.cvds.auth.models.User;
 import java.edu.eci.cvds.auth.service.UserService;
+import java.edu.eci.cvds.auth.dto.UserResponseDTO;
 import java.edu.eci.cvds.auth.dto.UserRegisterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
