@@ -21,10 +21,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email is already registered.");
-        }
+    public User registerUser(UserRegisterDTO userDto) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(hash(userDto.getPassword()));
+        return userRepository.save(user);
+    }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
