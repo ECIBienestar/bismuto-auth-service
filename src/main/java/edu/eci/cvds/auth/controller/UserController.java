@@ -2,6 +2,7 @@ package java.edu.eci.cvds.auth.controller;
 
 import java.edu.eci.cvds.auth.models.User;
 import java.edu.eci.cvds.auth.service.UserService;
+import java.edu.eci.cvds.auth.dto.UserRegisterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO userDto) {
         try {
-            User createdUser = userService.registerUser(user);
+            User createdUser = userService.registerUser(userDto);
             return ResponseEntity.ok(createdUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
