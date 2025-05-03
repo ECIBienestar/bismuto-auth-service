@@ -1,16 +1,25 @@
 package java.edu.eci.cvds.auth.dto;
 
-public class UserRegisterDTO {
+public class UserResponseDTO {
+    private String id;
     private String name;
     private String email;
-    private String password;
 
-    public UserRegisterDTO() {}
+    public UserResponseDTO() {
+    }
 
-    public UserRegisterDTO(String name, String email, String password) {
+    public UserResponseDTO(String id, String name, String email) {
+        this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -27,13 +36,5 @@ public class UserRegisterDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

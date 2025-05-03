@@ -19,26 +19,31 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO userDto) {
+    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRegisterDTO userDto) {
         try {
             User createdUser = userService.registerUser(userDto);
-            return ResponseEntity.ok(createdUser);
+            UserResponseDTO responseDTO = new UserResponseDTO(
+                    createdUser.getId(),
+                    createdUser.getName(),
+                    createdUser.getEmail()
+            );
+            return ResponseEntity.ok(responseDTO);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
         return userService.findByEmail(email)
-                .map(ResponseEntity::ok)
+                .map(user -> ResponseEntity.ok(new UserResponseDTO(user.getId(), user.getName(), user.getEmail())))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable String id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String id) {
         return userService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(user -> ResponseEntity.ok(new UserResponseDTO(user.getId(), user.getName(), user.getEmail())))
                 .orElse(ResponseEntity.notFound().build());
     }
 }
