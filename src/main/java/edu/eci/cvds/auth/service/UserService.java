@@ -7,6 +7,7 @@ import java.edu.eci.cvds.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.edu.eci.cvds.auth.exception.*;
 
 import java.util.Optional;
 
@@ -23,6 +24,10 @@ public class UserService {
     }
 
     public User registerUser(UserRegisterDTO userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + userDto.getEmail() + " already exists.");
+        }
+
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -35,11 +40,20 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
     public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        try{
+            return userRepository.findByEmail(email);
+        }catch(UserNotFoundException e){
+            throw new UserNotFoundException("User with email " + email + " not found.");
+        }
     }
 
-    public Optional<User> findById(String id) {
-        return userRepository.findById(id);
+    public Optional<User> getUserById(String id) {
+        try{
+            return userRepository.findById(id);
+        }catch(UserNotFoundException e){
+            throw new UserNotFoundException("User with id " + id + " not found.");
+        }
     }
 }

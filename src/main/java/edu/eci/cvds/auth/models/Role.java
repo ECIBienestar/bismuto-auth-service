@@ -5,5 +5,6 @@ public enum Role {
     PROFESSOR,
     STUDENT,
     DOCTOR,
-    TRAINER
+    TRAINER,
+    MONITOR
 }

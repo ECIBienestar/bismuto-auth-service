@@ -1,6 +1,7 @@
 package java.edu.eci.cvds.auth.security;
 
 import java.edu.eci.cvds.auth.service.UserService;
+import java.edu.eci.cvds.auth.models.User;
 import java.edu.eci.cvds.auth.util.JwtUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -27,23 +29,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String token = getTokenFromRequest(request);
 
         if (token != null && jwtUtil.validateToken(token, jwtUtil.extractUsername(token))) {
-            var userDetails = userService.findByEmail(jwtUtil.extractUsername(token)).get();
+            Optional<User> optionalUser = userService.findByEmail(jwtUtil.extractUsername(token));
+            if (optionalUser.isPresent()) {
+                var userDetails = optionalUser.get();
+                var authorities = List.of(new SimpleGrantedAuthority(userDetails.getRole().name()));
+                var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            var authorities = List.of(new SimpleGrantedAuthority(userDetails.getRole().name()));
-            var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
