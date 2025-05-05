@@ -1,6 +1,6 @@
-package java.edu.eci.cvds.auth.repository;
+package edu.eci.cvds.auth.repository;
 
-import java.edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.models.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

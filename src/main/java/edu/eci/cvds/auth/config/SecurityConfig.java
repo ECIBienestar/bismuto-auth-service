@@ -1,6 +1,6 @@
-package java.edu.eci.cvds.auth.config;
+package edu.eci.cvds.auth.config;
 
-import java.edu.eci.cvds.auth.security.JwtAuthenticationFilter;
+import edu.eci.cvds.auth.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private JwtAuthenticationFilter jwtFilter;
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         return http

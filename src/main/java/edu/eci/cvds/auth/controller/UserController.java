@@ -1,14 +1,18 @@
-package java.edu.eci.cvds.auth.controller;
+package edu.eci.cvds.auth.controller;
 
-import java.edu.eci.cvds.auth.models.User;
-import java.edu.eci.cvds.auth.service.UserService;
-import java.edu.eci.cvds.auth.dto.UserResponseDTO;
-import java.edu.eci.cvds.auth.dto.UserRegisterDTO;
+import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.service.UserService;
+import edu.eci.cvds.auth.dto.UserResponseDTO;
+import edu.eci.cvds.auth.dto.UserRegisterDTO;
+import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.models.Role;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.edu.eci.cvds.auth.exception.UserAlreadyExistsException;
+import edu.eci.cvds.auth.exception.UserAlreadyExistsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @RestController

@@ -1,8 +1,8 @@
-package java.edu.eci.cvds.auth.security;
+package edu.eci.cvds.auth.security;
 
-import java.edu.eci.cvds.auth.service.UserService;
-import java.edu.eci.cvds.auth.models.User;
-import java.edu.eci.cvds.auth.util.JwtUtil;
+import edu.eci.cvds.auth.service.UserService;
+import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.util.JwtUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

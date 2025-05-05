@@ -1,4 +1,4 @@
-package java.edu.eci.cvds.auth.dto;
+package edu.eci.cvds.auth.dto;
 
 public class AuthenticationResponse {
     private String token;
