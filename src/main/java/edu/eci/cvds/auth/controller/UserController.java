@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRegisterDTO userDto) {
+    public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO userDto) {
         try {
             User createdUser = userService.registerUser(userDto);
             UserResponseDTO responseDTO = new UserResponseDTO(
@@ -37,7 +37,10 @@ public class UserController {
             );
             return ResponseEntity.ok(responseDTO);
         } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(409).build();
+            return ResponseEntity.status(409).body("Usuario ya registrado.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }
     }
 
