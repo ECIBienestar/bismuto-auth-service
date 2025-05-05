@@ -92,6 +92,29 @@ bismuto-auth-service/
    mvn spring-boot:run
    ```
 
+
+## 📑 Diagrams
+Some of the diagrams proposed for this module are the following, which will help us to have a clear idea of ​​how the system works and is constructed:
+
+
+### Data
+Shows the structure of data within the system, including entities, attributes, and their relationships. It is useful for database design and understanding how data is organized and linked.
+
+![DiagramData](DiagramaEndebido.png)
+
+
+### Components
+Illustrates the physical and software components of a system and how they are grouped and connected. It helps visualize the architecture and module distribution of the application.
+
+![DiagramComponents](DiagramaComponentesAutentificacion.png)
+
+
+### Secuence
+Describes how objects interact in a specific sequence of events over time. It focuses on the order of messages exchanged between objects to accomplish particular use cases or functions.
+
+![DiagramSecuence](DiagramaSecuenciaEstadisticas.png)
+
+
 ## 📌 API Endpoints
 
 ### Authentication
