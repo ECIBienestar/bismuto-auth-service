@@ -20,8 +20,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
-    <!-- Spring Cloud BOM version for compatibility with Spring Boot 3.2.x -->
     <spring-cloud.version>2023.0.3</spring-cloud.version>
+
+    <!-- Testing versions -->
+    <mockito.version>5.10.0</mockito.version>
+    <junit.jupiter.version>5.10.0</junit.jupiter.version>
 
     <!-- SonarCloud Properties -->
     <sonar.projectKey>JAPV-X2612:laboratory-reservation</sonar.projectKey>
@@ -38,7 +41,6 @@
     <sonar.coverage.exclusions>src/**/configurators/*</sonar.coverage.exclusions>
   </properties>
 
-  <!-- Import Spring Cloud BOM for OpenFeign support -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -57,20 +59,21 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
 
     <!-- Feign HTTP client -->
@@ -79,47 +82,12 @@
       <artifactId>spring-cloud-starter-openfeign</artifactId>
     </dependency>
 
-    <!-- Spring Security -->
+    <!-- Development Tools -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-
-    <!-- JWT -->
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-api</artifactId>
-      <version>0.11.5</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-impl</artifactId>
-      <version>0.11.5</version>
+      <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-jackson</artifactId>
-      <version>0.11.5</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <!-- Servlet API -->
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>6.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Lombok -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.24</version>
-      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
 
     <!-- ModelMapper -->
@@ -129,26 +97,51 @@
       <version>3.2.2</version>
     </dependency>
 
-    <!-- Jakarta Validation -->
+    <!-- JWT -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.11.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>0.11.5</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Jakarta -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.0.0</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
       <version>3.0.2</version>
     </dependency>
 
-    <!-- API Documentation -->
+    <!-- Utilities -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Documentation -->
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>2.3.0</version>
-    </dependency>
-
-    <!-- DevTools -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
     </dependency>
 
     <!-- Testing -->
@@ -167,12 +160,28 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -181,23 +190,27 @@
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- Jackson (para JSON) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
+        <version>3.11.0</version>
         <configuration>
           <release>${java.version}</release>
           <annotationProcessorPaths>
-            <!-- Procesador de Lombok -->
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
-              <version>1.18.38</version>
+              <version>1.18.30</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
@@ -218,7 +231,11 @@
             <goals><goal>report</goal></goals>
             <configuration>
               <excludes>
-                <exclude>**/configurators/*</exclude>
+                <exclude>**/config/*</exclude>
+                <exclude>**/repository/*</exclude>
+                <exclude>**/controller/*</exclude>
+                <exclude>**/security/*</exclude>
+                <exclude>**/*AuthServiceApplication.class</exclude>
               </excludes>
             </configuration>
           </execution>
@@ -226,6 +243,13 @@
             <id>jacoco-check</id>
             <goals><goal>check</goal></goals>
             <configuration>
+              <excludes>
+                <exclude>**/config/*</exclude>
+                <exclude>**/repository/*</exclude>
+                <exclude>**/controller/*</exclude>
+                <exclude>**/security/*</exclude>
+                <exclude>**/*AuthServiceApplication.class</exclude>
+              </excludes>
               <rules>
                 <rule>
                   <element>PACKAGE</element>
@@ -233,7 +257,7 @@
                     <limit>
                       <counter>CLASS</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.00</minimum>
+                      <minimum>0.80</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -243,14 +267,6 @@
         </executions>
       </plugin>
 
-      <!-- SonarQube Plugin -->
-      <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>4.0.0.4121</version>
-      </plugin>
-
-      <!-- Spring Boot Plugin -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

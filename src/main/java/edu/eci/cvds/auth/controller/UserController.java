@@ -1,14 +1,19 @@
-package java.edu.eci.cvds.auth.controller;
+package edu.eci.cvds.auth.controller;
 
-import java.edu.eci.cvds.auth.models.User;
-import java.edu.eci.cvds.auth.service.UserService;
-import java.edu.eci.cvds.auth.dto.UserResponseDTO;
-import java.edu.eci.cvds.auth.dto.UserRegisterDTO;
+import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.service.UserService;
+import edu.eci.cvds.auth.dto.UserResponseDTO;
+import edu.eci.cvds.auth.dto.UserRegisterDTO;
+import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.models.Role;
 import java.util.Optional;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.edu.eci.cvds.auth.exception.UserAlreadyExistsException;
+import edu.eci.cvds.auth.exception.UserAlreadyExistsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @RestController
@@ -23,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRegisterDTO userDto) {
+    public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO userDto) {
         try {
             User createdUser = userService.registerUser(userDto);
             UserResponseDTO responseDTO = new UserResponseDTO(
@@ -33,7 +38,10 @@ public class UserController {
             );
             return ResponseEntity.ok(responseDTO);
         } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(409).build();
+            return ResponseEntity.status(409).body("Usuario ya registrado.");
+        } catch (Exception e) {
+            Logger.getLogger(UserController.class.getName()).severe("Error al registrar el usuario: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }
     }
 

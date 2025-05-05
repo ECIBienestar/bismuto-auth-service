@@ -1,4 +1,4 @@
-package java.edu.eci.cvds.auth.models;
+package edu.eci.cvds.auth.models;
 
 public enum Role {
     ADMIN,
