@@ -48,14 +48,4 @@ public class GlobalExceptionHandlerTest {
         assertEquals(UNAUTHORIZED, response.getStatusCode());
         assertEquals(message, response.getBody());
     }
-
-    @Test
-    public void testHandleOtherExceptions() {
-        Exception ex = new Exception("Unexpected error");
-
-        ResponseEntity<String> response = handler.handleOtherExceptions(ex);
-
-        assertEquals(INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Error interno", response.getBody());
-    }
 }

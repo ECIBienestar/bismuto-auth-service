@@ -4,29 +4,40 @@ import edu.eci.cvds.auth.models.User;
 import edu.eci.cvds.auth.service.UserService;
 import edu.eci.cvds.auth.dto.UserResponseDTO;
 import edu.eci.cvds.auth.dto.UserRegisterDTO;
-import edu.eci.cvds.auth.models.User;
-import edu.eci.cvds.auth.models.Role;
+import edu.eci.cvds.auth.exception.UserAlreadyExistsException;
+
 import java.util.Optional;
 import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import edu.eci.cvds.auth.exception.UserAlreadyExistsException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-
+/**
+ * REST controller for handling user-related operations such as registration and lookup.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Constructor for dependency injection.
+     *
+     * @param userService the service that manages user operations
+     */
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param userDto the user registration data transfer object
+     * @return a response with the created user's basic information or an error message
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO userDto) {
         try {
@@ -38,13 +49,19 @@ public class UserController {
             );
             return ResponseEntity.ok(responseDTO);
         } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(409).body("Usuario ya registrado.");
+            return ResponseEntity.status(409).body("User already registered.");
         } catch (Exception e) {
-            Logger.getLogger(UserController.class.getName()).severe("Error al registrar el usuario: " + e.getMessage());
-            return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
+            Logger.getLogger(UserController.class.getName()).severe("Error registering user: " + e.getMessage());
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
         }
     }
 
+    /**
+     * Retrieves a user by their email address.
+     *
+     * @param email the user's email
+     * @return the user information if found, or 404 Not Found otherwise
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
         Optional<User> userOptional = userService.findByEmail(email);
@@ -53,6 +70,12 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param id the user's ID
+     * @return the user information if found, or 404 Not Found otherwise
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String id) {
         Optional<User> userOptional = userService.getUserById(id);

@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * Controller for handling authentication-related endpoints.
+ * Provides functionality for user login, token validation, and token refreshing.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -23,6 +27,13 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
+    /**
+     * Constructor for dependency injection.
+     *
+     * @param authenticationManager Spring Security authentication manager
+     * @param jwtUtil               Utility class for JWT operations
+     * @param userService           Service for accessing user data
+     */
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
@@ -32,6 +43,12 @@ public class AuthController {
         this.userService = userService;
     }
 
+    /**
+     * Authenticates the user and generates a JWT token if credentials are valid.
+     *
+     * @param request the authentication request with email and password
+     * @return a response containing the JWT token
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(
@@ -39,26 +56,39 @@ public class AuthController {
         );
 
         User user = userService.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String jwt = jwtUtil.generateToken(user.getEmail());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
+    /**
+     * Validates the provided JWT token.
+     *
+     * @param authHeader the Authorization header containing the Bearer token
+     * @return a response indicating whether the token is valid
+     */
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(
-            @RequestHeader(value="Authorization", required=false) String authHeader
+            @RequestHeader(value = "Authorization", required = false) String authHeader
     ) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body(Map.of("error","Missing or invalid Authorization header"));
+            return ResponseEntity.badRequest().body(Map.of("error", "Missing or invalid Authorization header"));
         }
+
         String token = authHeader.substring(7);
         String username = jwtUtil.extractUsername(token);
         boolean valid = jwtUtil.validateToken(token, username);
+
         return ResponseEntity.ok(Map.of("valid", valid));
     }
 
-
+    /**
+     * Generates a new JWT token if the current token is valid.
+     *
+     * @param authHeader the Authorization header with the old JWT token
+     * @return a response containing the new JWT token
+     */
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refresh(@RequestHeader("Authorization") String authHeader) {
         String oldToken = authHeader.replace("Bearer ", "");
@@ -69,7 +99,7 @@ public class AuthController {
         }
 
         User user = userService.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String newToken = jwtUtil.generateToken(user.getEmail());
         return ResponseEntity.ok(new AuthenticationResponse(newToken));
