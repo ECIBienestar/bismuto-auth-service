@@ -13,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 /**
  * REST controller for handling user-related operations such as registration and lookup.
  */
@@ -22,11 +26,6 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-     * Constructor for dependency injection.
-     *
-     * @param userService the service that manages user operations
-     */
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -38,6 +37,12 @@ public class UserController {
      * @param userDto the user registration data transfer object
      * @return a response with the created user's basic information or an error message
      */
+    @Operation(summary = "Register a new user", description = "Registers a new user with the provided information.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully registered."),
+            @ApiResponse(responseCode = "409", description = "User already registered."),
+            @ApiResponse(responseCode = "500", description = "Internal server error.")
+    })
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO userDto) {
         try {
@@ -62,6 +67,11 @@ public class UserController {
      * @param email the user's email
      * @return the user information if found, or 404 Not Found otherwise
      */
+    @Operation(summary = "Get user by email", description = "Retrieves the user information based on the provided email address.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found."),
+            @ApiResponse(responseCode = "404", description = "User not found.")
+    })
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
         Optional<User> userOptional = userService.findByEmail(email);
@@ -76,6 +86,11 @@ public class UserController {
      * @param id the user's ID
      * @return the user information if found, or 404 Not Found otherwise
      */
+    @Operation(summary = "Get user by ID", description = "Retrieves the user information based on the provided unique user ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found."),
+            @ApiResponse(responseCode = "404", description = "User not found.")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String id) {
         Optional<User> userOptional = userService.getUserById(id);

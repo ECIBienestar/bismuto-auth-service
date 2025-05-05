@@ -5,6 +5,9 @@ import edu.eci.cvds.auth.dto.AuthenticationResponse;
 import edu.eci.cvds.auth.models.User;
 import edu.eci.cvds.auth.service.UserService;
 import edu.eci.cvds.auth.util.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +30,6 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    /**
-     * Constructor for dependency injection.
-     *
-     * @param authenticationManager Spring Security authentication manager
-     * @param jwtUtil               Utility class for JWT operations
-     * @param userService           Service for accessing user data
-     */
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
@@ -49,6 +45,11 @@ public class AuthController {
      * @param request the authentication request with email and password
      * @return a response containing the JWT token
      */
+    @Operation(summary = "Login user", description = "Authenticates a user and generates a JWT token if credentials are valid.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful and JWT token generated."),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials.")
+    })
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(
@@ -68,6 +69,11 @@ public class AuthController {
      * @param authHeader the Authorization header containing the Bearer token
      * @return a response indicating whether the token is valid
      */
+    @Operation(summary = "Validate JWT token", description = "Validates the provided JWT token.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Token validation result."),
+            @ApiResponse(responseCode = "400", description = "Invalid or missing Authorization header.")
+    })
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(
             @RequestHeader(value = "Authorization", required = false) String authHeader
@@ -89,6 +95,11 @@ public class AuthController {
      * @param authHeader the Authorization header with the old JWT token
      * @return a response containing the new JWT token
      */
+    @Operation(summary = "Refresh JWT token", description = "Generates a new JWT token if the current token is valid.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "New JWT token generated."),
+            @ApiResponse(responseCode = "401", description = "Invalid or expired token.")
+    })
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refresh(@RequestHeader("Authorization") String authHeader) {
         String oldToken = authHeader.replace("Bearer ", "");
