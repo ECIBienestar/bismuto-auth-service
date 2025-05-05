@@ -7,6 +7,7 @@ import edu.eci.cvds.auth.dto.UserRegisterDTO;
 import edu.eci.cvds.auth.models.User;
 import edu.eci.cvds.auth.models.Role;
 import java.util.Optional;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class UserController {
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(409).body("Usuario ya registrado.");
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(UserController.class.getName()).severe("Error al registrar el usuario: " + e.getMessage());
             return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }
     }

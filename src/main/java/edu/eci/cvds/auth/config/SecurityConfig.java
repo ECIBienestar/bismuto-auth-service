@@ -18,9 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeHttpRequests(auth -> auth
+        http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",         // login, refresh, validate
                                 "/api/users/register",
