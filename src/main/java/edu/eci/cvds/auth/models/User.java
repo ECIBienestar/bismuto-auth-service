@@ -1,65 +1,68 @@
-package java.edu.eci.cvds.auth.models;
+package edu.eci.cvds.auth.models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import edu.eci.cvds.auth.models.enums.Role;
+import edu.eci.cvds.auth.models.enums.IdType;
 
-@Document("users")
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * Base abstract user entity that represents common attributes for all system users.
+ * This class serves as the parent class for more specific user types like Student and Staff.
+ * 
+ * @author Jesús Pinzón (Team Bismuto)
+ * @version 1.1
+ * @since 2025-05-09
+ */
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "users", schema = "public")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
-
+    
     @Id
-    private String id;
-    private String name;
+    @Column(length = 15)
+    @NotBlank(message = "ID cannot be blank")
+    @Size(min = 5, max = 15, message = "ID must be between 5 and 15 characters")
+    private String id; // national ID
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "id_type", nullable = false, length = 20)
+    private IdType idType;
+
+    @Column(name = "full_name", nullable = false)
+    @NotBlank(message = "Full name cannot be blank")
+    @Size(max = 100, message = "Full name must be at most 100 characters")
+    private String fullName;
+
+    @Column(nullable = false, length = 20)
+    @NotBlank(message = "Phone number cannot be blank")
+    // @Pattern(regexp = "^\\+?[0-9]{8,15}$", message = "Phone must be a valid number with 8-15 digits, optionally starting with '+'")
+    private String phone;
+
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be valid")
+    @Size(max = 50, message = "Email must be at most 50 characters")
     private String email;
-    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Role role;
 
-    public User() {}
+    @Column(nullable = false)
+    private boolean active = true;
 
-    public User(String id, String name, String email, String password, Role role) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    @Column(nullable = false)
+    @NotBlank(message = "Password cannot be blank")
+    private String password;
 }
