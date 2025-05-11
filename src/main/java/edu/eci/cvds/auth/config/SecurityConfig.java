@@ -1,76 +1,84 @@
 package edu.eci.cvds.auth.config;
 
-import edu.eci.cvds.auth.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * Configuration class for Spring Security setup.
- * It defines the security filter chain, password encoder, and authentication manager.
- */
+import java.util.List;
+
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    /**
-     * Defines the security filter chain.
-     * <p>
-     * This method configures the HTTP security settings:
-     * - Allows unauthenticated access to authentication endpoints and API documentation.
-     * - Requires authentication for all other endpoints.
-     * - Disables session creation to support stateless authentication via JWT.
-     * - Adds the custom JWT authentication filter before the standard username-password filter.
-     *
-     * @param http      the HttpSecurity to configure
-     * @param jwtFilter the custom JWT authentication filter
-     * @return the configured SecurityFilterChain
-     * @throws Exception in case of any error during configuration
-     */
+    
+    private final UserDetailsService userDetailsService;
+    
+    @Value("${app.cors.allowed-origins}")
+    private List<String> allowedOrigins;
+    
+    @Value("${app.cors.allowed-methods}")
+    private List<String> allowedMethods;
+    
+    @Value("${app.cors.allowed-headers}")
+    private List<String> allowedHeaders;
+    
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**",         // Public endpoints for login, token refresh, and validation
-                                "/api/users/register",  // Public endpoint for user registration
-                                "/swagger-ui/**",       // Swagger UI access
-                                "/v3/api-docs/**"       // API documentation access
-                        ).permitAll()
-                        .anyRequest().authenticated() // All other endpoints require authentication
-                )
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
-        return http.build();
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
-
-    /**
-     * Exposes the authentication manager bean, which is used to authenticate credentials.
-     *
-     * @param config the authentication configuration
-     * @return the AuthenticationManager bean
-     * @throws Exception if the authentication manager cannot be retrieved
-     */
+    
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
-
-    /**
-     * Defines the password encoder bean used to hash passwords.
-     * Uses BCrypt as the hashing algorithm.
-     *
-     * @return the PasswordEncoder bean
-     */
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
+                .anyRequest().authenticated()
+            )
+            .build();
+    }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedMethods(allowedMethods);
+        configuration.setAllowedHeaders(allowedHeaders);
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
