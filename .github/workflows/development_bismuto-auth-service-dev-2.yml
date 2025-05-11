@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - bismuto-auth-service-prod-2
+name: Build and deploy JAR app to Azure Web App - bismuto-auth-service-dev-2
 
 on:
   push:
     branches:
-      - main
+      - development
   workflow_dispatch:
 
 jobs:
@@ -73,14 +73,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_316D7AA3A48C45C184F2EE0E247EE4B3 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0384F67CF2FD421287C239C0886C61D9 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C8BE756EC0E44C6DA0F3191727FD7D5A }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3EEA203841BF48D8B5FE22E47430CC69 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9D44CFF9194E442BA16A8B88E8BA4CB0 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2F090BB2608045DCB3EB28EAF6109625 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'bismuto-auth-service-prod-2'
+          app-name: 'bismuto-auth-service-dev-2'
           slot-name: 'Production'
           package: '*.jar'
