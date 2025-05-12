@@ -197,6 +197,12 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>8.0.0.Final</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -234,7 +240,6 @@
               <excludes>
                 <exclude>**/config/*</exclude>
                 <exclude>**/repository/*</exclude>
-                <exclude>**/controller/*</exclude>
                 <exclude>**/security/*</exclude>
                 <exclude>**/*AuthServiceApplication.class</exclude>
               </excludes>
@@ -247,7 +252,6 @@
               <excludes>
                 <exclude>**/config/*</exclude>
                 <exclude>**/repository/*</exclude>
-                <exclude>**/controller/*</exclude>
                 <exclude>**/security/*</exclude>
                 <exclude>**/*AuthServiceApplication.class</exclude>
               </excludes>
