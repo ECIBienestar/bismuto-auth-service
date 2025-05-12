@@ -23,6 +23,10 @@ This microservice is part of the ECI-Bienestar integrated platform designed for 
 - **SonarCloud** (for code quality)
 - **JWT** (for secure authentication)
 
+## 🔗 Microservices diagram
+
+![](docs/microservices.png)
+
 ## 📂 Project Structure
 
 ```
@@ -64,6 +68,14 @@ bismuto-auth-service/
                 ├── service/          # Service Tests
                 └── util/             # Utility Tests
 ```
+
+## 📐 Architectural style
+
+![Architectural reports](docs/InformeDeArquitecturaBismutoSpring3.pdf)
+
+## ⚙️ Internal functioning
+
+![Requirements analysis](docs/AnálisisRequerimientosBismutoSprint3.pdf)
 
 ## 🚀 How to Run the Project
 
