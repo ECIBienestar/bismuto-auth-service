@@ -16,8 +16,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.validation.DataBinder;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +52,8 @@ class GlobalExceptionHandlerTest {
         BadCredentialsException ex = new BadCredentialsException("Bad credentials");
         when(webRequest.getDescription(false)).thenReturn("uri=/api/auth/login");
 
-        ResponseEntity<ErrorResponseDTO> response = globalExceptionHandler.handleAuthenticationException(ex, webRequest);
+        ResponseEntity<ErrorResponseDTO> response = globalExceptionHandler.handleAuthenticationException(ex,
+                webRequest);
 
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -87,7 +86,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleMethodArgumentNotValidException_ShouldReturnBadRequestResponse() throws Exception {
+    void handleMethodArgumentNotValidException_ShouldReturnBadRequestResponse() {
         Object target = new Object();
         DataBinder binder = new DataBinder(target);
         BindingResult bindingResult = binder.getBindingResult();

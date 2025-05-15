@@ -89,36 +89,37 @@ class AuthRequestDTOTest {
     @Test
     void equalsShouldReturnTrueForSameObject() {
         AuthRequestDTO dto = new AuthRequestDTO("testUser", "testPass");
-        assertTrue(dto.equals(dto));
+        assertEquals(dto, dto);
     }
 
     @Test
     void equalsShouldReturnTrueForEqualObjects() {
         AuthRequestDTO dto1 = new AuthRequestDTO("testUser", "testPass");
         AuthRequestDTO dto2 = new AuthRequestDTO("testUser", "testPass");
-        assertTrue(dto1.equals(dto2));
+        assertEquals(dto1, dto2);
     }
 
     @Test
     void equalsShouldReturnFalseForDifferentUsername() {
         AuthRequestDTO dto1 = new AuthRequestDTO("testUser1", "testPass");
         AuthRequestDTO dto2 = new AuthRequestDTO("testUser2", "testPass");
-        assertFalse(dto1.equals(dto2));
+        assertNotEquals(dto1, dto2);
     }
 
     @Test
     void equalsShouldReturnFalseForDifferentPassword() {
         AuthRequestDTO dto1 = new AuthRequestDTO("testUser", "testPass1");
         AuthRequestDTO dto2 = new AuthRequestDTO("testUser", "testPass2");
-        assertFalse(dto1.equals(dto2));
+        assertNotEquals(dto1, dto2);
     }
 
     @Test
     void equalsShouldReturnFalseForNull() {
         AuthRequestDTO dto = new AuthRequestDTO("testUser", "testPass");
-        assertFalse(dto.equals(null));
+        assertNotEquals(null, dto);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     void equalsShouldReturnFalseForDifferentClass() {
         AuthRequestDTO dto = new AuthRequestDTO("testUser", "testPass");
@@ -153,6 +154,7 @@ class AuthRequestDTOTest {
         assertEquals(initialHashCode, dto.hashCode());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     void equalsShouldHandleAllBranches() {
         AuthRequestDTO dto1 = new AuthRequestDTO("user", "pass");

@@ -1,9 +1,16 @@
 package edu.eci.cvds.auth.dto;
 
-import edu.eci.cvds.auth.dto.ErrorResponseDTO;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
-import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 class ErrorResponseDTOTest {
 
@@ -89,7 +96,7 @@ class ErrorResponseDTOTest {
     @Test
     void equalsShouldReturnTrueForSameObject() {
         ErrorResponseDTO dto = new ErrorResponseDTO();
-        assertTrue(dto.equals(dto));
+        assertEquals(dto, dto);
     }
 
     @Test
@@ -97,7 +104,7 @@ class ErrorResponseDTOTest {
         LocalDateTime now = LocalDateTime.now();
         ErrorResponseDTO dto1 = new ErrorResponseDTO(now, 400, "Error", "Message", "/path");
         ErrorResponseDTO dto2 = new ErrorResponseDTO(now, 400, "Error", "Message", "/path");
-        assertTrue(dto1.equals(dto2));
+        assertEquals(dto1, dto2);
     }
 
     @Test
@@ -105,19 +112,19 @@ class ErrorResponseDTOTest {
         LocalDateTime now = LocalDateTime.now();
         ErrorResponseDTO dto1 = new ErrorResponseDTO(now, 400, "Error", "Message", "/path");
         ErrorResponseDTO dto2 = new ErrorResponseDTO(now, 404, "Not Found", "Message", "/path");
-        assertFalse(dto1.equals(dto2));
+        assertNotEquals(dto1, dto2);
     }
 
     @Test
     void equalsShouldReturnFalseForNull() {
         ErrorResponseDTO dto = new ErrorResponseDTO();
-        assertFalse(dto.equals(null));
+        assertNotEquals(null, dto);
     }
 
     @Test
     void equalsShouldReturnFalseForDifferentClass() {
         ErrorResponseDTO dto = new ErrorResponseDTO();
-        assertFalse(dto.equals("String"));
+        assertNotEquals("String", dto);
     }
 
     // Test hashCode() method
@@ -233,7 +240,7 @@ class ErrorResponseDTOTest {
         assertNotEquals(null, base);
 
         // 4. Test con clase diferente
-        assertNotEquals(base, "No soy un DTO");
+        assertNotEquals("No soy un DTO", base);
 
         // 5. Test de igualdad con objeto idéntico
         ErrorResponseDTO identical = new ErrorResponseDTO(now, 400, "Error", "Message", "/path");
@@ -260,5 +267,6 @@ class ErrorResponseDTOTest {
 
         // 9. Test de diferencia cuando solo uno tiene campo null
         ErrorResponseDTO partialNull = new ErrorResponseDTO(now, 0, null, null, null);
-        assertNotEquals(allNull1, partialNull);}
+        assertNotEquals(allNull1, partialNull);
+    }
 }

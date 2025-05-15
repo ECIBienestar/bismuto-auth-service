@@ -52,7 +52,7 @@ class AuthControllerTest {
         ResponseEntity<AuthResponseDTO> response = authController.login(authRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("200 OK", String.valueOf(response.getStatusCode()));
         assertEquals(authResponse, response.getBody());
         verify(authService, times(1)).authenticate(authRequest);
     }
@@ -64,7 +64,7 @@ class AuthControllerTest {
         ResponseEntity<AuthResponseDTO> response = authController.refreshToken(refreshRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("200 OK", String.valueOf(response.getStatusCode()));
         assertEquals(authResponse, response.getBody());
         verify(authService, times(1)).refreshToken(refreshRequest);
     }

@@ -73,9 +73,9 @@ class TokenRefreshRequestDTOTest {
 
         assertNotEquals(dto1, dto3);
 
-        assertNotEquals(dto1, null);
+        assertNotEquals(null, dto1);
 
-        assertNotEquals(dto1, "I'm a String");
+        assertNotEquals("I'm a String", dto1);
     }
 
     @Test

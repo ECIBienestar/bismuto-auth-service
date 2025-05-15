@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -71,8 +70,7 @@ class AuthServiceImplTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 testUserId,
                 testPassword,
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_STUDENT"))
-        );
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_STUDENT")));
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtProvider.generateToken(authentication)).thenReturn(testToken);
         when(jwtProvider.generateRefreshToken(authentication)).thenReturn(testRefreshToken);
@@ -103,8 +101,7 @@ class AuthServiceImplTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 testUserId,
                 testPassword,
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_STUDENT"))
-        );
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_STUDENT")));
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtProvider.generateToken(authentication)).thenReturn(testToken);
         when(jwtProvider.generateRefreshToken(authentication)).thenReturn(testRefreshToken);
@@ -188,8 +185,7 @@ class AuthServiceImplTest {
                         "",
                         Collections.singletonList(authority)),
                 null,
-                Collections.singletonList(authority)
-        );
+                Collections.singletonList(authority));
         when(jwtProvider.getAuthentication(testRefreshToken)).thenReturn(authentication);
         when(jwtProvider.generateToken(any(Authentication.class))).thenReturn("newToken");
         when(jwtProvider.generateRefreshToken(any(Authentication.class))).thenReturn("newRefreshToken");
