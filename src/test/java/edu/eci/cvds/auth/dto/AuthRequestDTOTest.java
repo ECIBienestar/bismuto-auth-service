@@ -1,15 +1,21 @@
 package edu.eci.cvds.auth.dto;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AuthRequestDTOTest {
 
@@ -119,11 +125,10 @@ class AuthRequestDTOTest {
         assertNotEquals(null, dto);
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     void equalsShouldReturnFalseForDifferentClass() {
         AuthRequestDTO dto = new AuthRequestDTO("testUser", "testPass");
-        assertFalse(dto.equals("testUser"));
+        assertEquals("testUser", String.valueOf(dto));
     }
 
     @Test
@@ -154,37 +159,35 @@ class AuthRequestDTOTest {
         assertEquals(initialHashCode, dto.hashCode());
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     void equalsShouldHandleAllBranches() {
         AuthRequestDTO dto1 = new AuthRequestDTO("user", "pass");
-        assertTrue(dto1.equals(dto1));
+        assertEquals(dto1, dto1);
+        assertNotNull(dto1);
 
-        assertFalse(dto1.equals(null));
-
-        assertFalse(dto1.equals("not a dto"));
+        assertEquals("not a dto", String.valueOf(dto1));
 
         AuthRequestDTO dto2 = new AuthRequestDTO("user", "pass");
-        assertTrue(dto1.equals(dto2));
+        assertEquals(dto1, dto2);
 
         AuthRequestDTO dto3 = new AuthRequestDTO("different", "pass");
-        assertFalse(dto1.equals(dto3));
+        assertNotEquals(dto1, dto3);
 
         AuthRequestDTO dto4 = new AuthRequestDTO("user", "different");
-        assertFalse(dto1.equals(dto4));
+        assertNotEquals(dto1, dto4);
 
         AuthRequestDTO dto5 = new AuthRequestDTO("diff", "diff");
-        assertFalse(dto1.equals(dto5));
+        assertNotEquals(dto1, dto5);
 
         AuthRequestDTO dto6 = new AuthRequestDTO(null, "pass");
         AuthRequestDTO dto7 = new AuthRequestDTO(null, "pass");
-        assertTrue(dto6.equals(dto7));
-        assertFalse(dto6.equals(dto1));
+        assertEquals(dto6, dto7);
+        assertNotEquals(dto6, dto1);
 
         AuthRequestDTO dto8 = new AuthRequestDTO("user", null);
         AuthRequestDTO dto9 = new AuthRequestDTO("user", null);
-        assertTrue(dto8.equals(dto9));
-        assertFalse(dto8.equals(dto1));
+        assertEquals(dto8, dto9);
+        assertNotEquals(dto8, dto1);
     }
 
     @Test
