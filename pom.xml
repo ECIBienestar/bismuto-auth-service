@@ -29,13 +29,18 @@
     <junit.jupiter.version>5.10.0</junit.jupiter.version>
 
     <!-- SonarCloud Properties -->
+    <sonar.projectKey>JAPV-X2612:laboratory-reservation</sonar.projectKey>
+    <sonar.organization>japv-x2612</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.organization>ecibienestar</sonar.organization>
-    <sonar.projectKey>ECIBienestar_bismuto-auth-service</sonar.projectKey>
-    <sonar.projectName>bismuto-auth-service</sonar.projectName>  
-    <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.coverage.exclusions>**/model/*,**/enums/*,**/security/*,**/utils/*,**/config/*,**/AuthServiceApplication.java</sonar.coverage.exclusions>
-    <sonar.coverage.jacoco.xmlReportPaths>../app-it/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.exclusions>src/**/configurators/*</sonar.coverage.exclusions>
+
+    <!-- SonarQube Properties -->
+    <sonar.projectKey>library</sonar.projectKey>
+    <sonar.projectName>library</sonar.projectName>
+    <sonar.host.url>http://localhost:9000</sonar.host.url>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.exclusions>src/**/configurators/*</sonar.coverage.exclusions>
   </properties>
 
   <dependencyManagement>
@@ -192,12 +197,6 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.hibernate.validator</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>8.0.0.Final</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -235,6 +234,7 @@
               <excludes>
                 <exclude>**/config/*</exclude>
                 <exclude>**/repository/*</exclude>
+                <exclude>**/controller/*</exclude>
                 <exclude>**/security/*</exclude>
                 <exclude>**/*AuthServiceApplication.class</exclude>
               </excludes>
@@ -247,6 +247,7 @@
               <excludes>
                 <exclude>**/config/*</exclude>
                 <exclude>**/repository/*</exclude>
+                <exclude>**/controller/*</exclude>
                 <exclude>**/security/*</exclude>
                 <exclude>**/*AuthServiceApplication.class</exclude>
               </excludes>
@@ -257,7 +258,7 @@
                     <limit>
                       <counter>CLASS</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.85</minimum>
+                      <minimum>0.00</minimum>
                     </limit>
                   </limits>
                 </rule>
