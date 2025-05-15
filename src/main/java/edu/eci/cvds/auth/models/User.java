@@ -12,10 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Base abstract user entity that represents common attributes for all system
- * users.
- * This class serves as the parent class for more specific user types like
- * Student and Staff.
+ * Base abstract user entity that represents common attributes for all system users.
+ * This class serves as the parent class for more specific user types like Student and Staff.
  * 
  * @author Jesús Pinzón (Team Bismuto)
  * @version 1.1
@@ -30,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class User {
-
+    
     @Id
     @Column(length = 15)
     @NotBlank(message = "ID cannot be blank")
@@ -48,8 +46,7 @@ public class User {
 
     @Column(nullable = false, length = 20)
     @NotBlank(message = "Phone number cannot be blank")
-    // @Pattern(regexp = "^\\+?[0-9]{8,15}$", message = "Phone must be a valid
-    // number with 8-15 digits, optionally starting with '+'")
+    // @Pattern(regexp = "^\\+?[0-9]{8,15}$", message = "Phone must be a valid number with 8-15 digits, optionally starting with '+'")
     private String phone;
 
     @Column(nullable = false, unique = true)
@@ -62,7 +59,6 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role;
 
-    @Builder.Default
     @Column(nullable = false)
     private boolean active = true;
 
