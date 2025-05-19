@@ -20,6 +20,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <spring-cloud.version>2023.0.3</spring-cloud.version>
 
     <!-- Testing versions -->
@@ -132,7 +134,8 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.24</version>
+      <version>1.18.30</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Swagger Documentation -->
@@ -255,7 +258,7 @@
                     <limit>
                       <counter>CLASS</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.00</minimum> <!-- TODO: Set minimum coverage -->
+                      <minimum>0.00</minimum>
                     </limit>
                   </limits>
                 </rule>

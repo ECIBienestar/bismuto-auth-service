@@ -23,6 +23,10 @@ This microservice is part of the ECI-Bienestar integrated platform designed for 
 - **SonarCloud** (for code quality)
 - **JWT** (for secure authentication)
 
+## 🔗 Microservices diagram
+
+![](docs/microservices.png)
+
 ## 📂 Project Structure
 
 ```
@@ -65,6 +69,14 @@ bismuto-auth-service/
                 └── util/             # Utility Tests
 ```
 
+## 📐 Architectural style
+
+![Architectural reports](docs/InformeDeArquitecturaBismutoSpring3.pdf)
+
+## ⚙️ Internal functioning
+
+![Requirements analysis](docs/AnálisisRequerimientosBismutoSprint3.pdf)
+
 ## 🚀 How to Run the Project
 
 ### Prerequisites
@@ -100,39 +112,30 @@ Some of the diagrams proposed for this module are the following, which will help
 ### Data
 Shows the structure of data within the system, including entities, attributes, and their relationships. It is useful for database design and understanding how data is organized and linked.
 
-![DiagramData](/docs/DiagramaEndebido.png)
+![DiagramData](docs/DiagramaEndebido.png)
 
 
 ### Components
 Illustrates the physical and software components of a system and how they are grouped and connected. It helps visualize the architecture and module distribution of the application.
 
-![DiagramComponents](/docs/DiagramaComponentesAutentificacion.png)
+![DiagramComponents](docs/DiagramaComponentesAutentificacion.png)
 
 
 ### Secuence
 Describes how objects interact in a specific sequence of events over time. It focuses on the order of messages exchanged between objects to accomplish particular use cases or functions.
 
-![DiagramSecuence](/docs/DiagramaSecuenciaEstadisticas.png)
+![DiagramSecuence](docs/DiagramaSecuenciaEstadisticas.png)
 
 
 ## 📌 API Endpoints
 
-### Authentication
+### AuthenticationController Management
 
 | Method | Endpoint               | Description                               |
 |--------|------------------------|-------------------------------------------|
 | POST   | /api/auth/login        | Authenticate user and generate JWT token  |
-| POST   | /api/auth/register     | Register a new user                       |
 | POST   | /api/auth/refresh      | Refresh an existing JWT token             |
 | POST   | /api/auth/logout       | Invalidate user's JWT token               |
-
-### Authorization
-
-| Method | Endpoint                 | Description                             |
-|--------|--------------------------|-----------------------------------------|
-| GET    | /api/auth/validate       | Validate a JWT token                    |
-| GET    | /api/auth/permissions    | Get user permissions                    |
-| GET    | /api/auth/roles          | Get available roles                     |
 
 ## 🧪 Running Tests
 
@@ -160,12 +163,61 @@ Each pipeline consists of three stages:
 
 Configuration files are located in the `.github/workflows/` directory.
 
+Here is an example of the CI/CD pipeline for the development environment:
+CI pipeline:
+[CI pipeline](docs/ci-pipeline.png)
+
+CD pipeline:
+[CD pipeline](docs/cd-pipeline.png)
+
+## 📦 Swagger documentation deployed
+The Swagger documentation for the API is automatically generated and can be accessed at the following URL:
+Production:
+```
+http://bismuto-auth-service-prod-2-eec9hretfnchbbeb.westus-01.azurewebsites.net/swagger-ui/index.html
+```
+
+Development:
+```
+http://bismuto-auth-service-dev-2-h5a8e5a5g2buf9hq.brazilsouth-01.azurewebsites.net/swagger-ui/index.html
+```
+
+This documentation provides a user-friendly interface to explore the API endpoints, request/response models, and test the API directly from the browser.
+
+Deployment is managed through Azure App Service, ensuring high availability and scalability.
+Here's an example of the Swagger documentation:
+![Swagger](docs/swagger.png)
+
 ## 🔄 Integration with Other Modules
 
 This authentication service integrates with other ECI-Bienestar modules:
 - **User Management Service**: For user profile information and role management
+How this module work with other modules?:
+This module is integrated with other modules in the ECI-Bienestar platform to provide a seamless user experience. This module also follows the microservices architecture, allowing it to communicate with other services through REST APIs.
 - **Statistics Service**: For logging authentication events
+How this module work with other modules?:
+This module is integrated with the Statistics Service to log authentication events, such as successful logins, failed login attempts, and token refreshes. This integration helps in monitoring user activity and identifying potential security threats.
 - **All other services**: For validating user access and permissions
+How this module work with other modules?:
+This module is integrated with all other services in the ECI-Bienestar platform to validate user access and permissions. Each service checks the JWT token provided by the user to ensure that they have the necessary permissions to access specific resources or perform certain actions.
+
+## Control of errors
+The module has been designed to handle errors and exceptions effectively. It uses a centralized exception handling mechanism to catch and respond to errors in a consistent manner. The following types of errors are handled:
+- **Authentication Errors**: Invalid credentials, expired tokens, etc.
+- **Authorization Errors**: Insufficient permissions to access resources
+- **Validation Errors**: Invalid input data
+- **Database Errors**: Issues with PostgreSQL connection or queries
+- **General Errors**: Any unexpected errors that occur during processing
+- **Custom Error Responses**: The module returns meaningful error messages and HTTP status codes to the client, making it easier to understand the nature of the error and how to resolve it.
+
+Heres a table with the errors and their respective messages:
+
+| Status Code | 	Error Message            | 	Probable Cause               | 	Recommended Action                     | 
+|-------------|---------------------------|-------------------------------|-----------------------------------------|
+| 400         | 	"Invalid input data"     | 	Failed form validations      | 	Check all required fields and formats  |
+| 401         | 	"Invalid credentials"    | 	Incorrect username/password  | 	Verify login details and try again     |
+| 404         | 	"User not found"         | 	User doesn't exist in system | 	Check username or register new account |
+| 500         | 	"Internal server error"  | 	Unexpected system failure    | 	Contact support with error details     |
 
 ## 🏗️ Future Improvements
 

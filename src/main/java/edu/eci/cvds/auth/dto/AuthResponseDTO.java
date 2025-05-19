@@ -7,6 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for authentication responses.
+ * Contains the authentication token and refresh token.
+ * 
+ * @author Jesús Pinzón (Team Bismuto)
+ * @version 1.0
+ * @since 2025-05-18
+ */
 @Data
 @Builder
 @NoArgsConstructor

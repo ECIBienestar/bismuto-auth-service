@@ -5,7 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/**
+ * Data Transfer Object for authentication requests.
+ * Contains the username and password for user authentication.
+ * 
+ * @author Jesús Pinzón (Team Bismuto)
+ * @version 1.0
+ * @since 2025-05-18
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
