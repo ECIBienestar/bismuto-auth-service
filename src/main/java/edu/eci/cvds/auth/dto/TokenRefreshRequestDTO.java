@@ -6,6 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for token refresh requests.
+ * Contains the refresh token for user authentication.
+ * 
+ * @author Jesús Pinzón (Team Bismuto)
+ * @version 1.0
+ * @since 2025-05-18
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
