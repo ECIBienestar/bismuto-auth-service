@@ -1,6 +1,7 @@
 package edu.eci.cvds.auth.dto;
 
 import edu.eci.cvds.auth.models.enums.Role;
+import edu.eci.cvds.auth.models.enums.Specialty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,4 +42,7 @@ public class AuthResponseDTO {
     
     @Schema(description = "User role")
     private Role role;
+
+    @Schema(description = "User specialty (if applicable)", nullable = true)
+    private Specialty specialty;
 }
