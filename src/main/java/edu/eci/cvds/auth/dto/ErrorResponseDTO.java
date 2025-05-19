@@ -8,6 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object for error responses.
+ * 
+ * @author Jesús Pinzón (Team Bismuto)
+ * @version 1.0
+ * @since 2025-05-18    
+ */
 @Data
 @Builder
 @NoArgsConstructor
