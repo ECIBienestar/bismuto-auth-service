@@ -2,7 +2,13 @@ package edu.eci.cvds.auth.security;
 
 import edu.eci.cvds.auth.config.JwtConfig;
 import edu.eci.cvds.auth.exception.AuthException;
+import edu.eci.cvds.auth.models.Staff;
+import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.models.enums.Role;
+import edu.eci.cvds.auth.repository.StaffRepository;
+import edu.eci.cvds.auth.repository.UserRepository;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
@@ -11,15 +17,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +32,8 @@ import java.util.UUID;
 public class JwtProvider {
     
     private final JwtConfig jwtConfig;
+    private final UserRepository userRepository;
+    private final StaffRepository staffRepository;
     
     public String generateToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
@@ -35,25 +42,58 @@ public class JwtProvider {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
         
-        return Jwts.builder()
+        String userId = userPrincipal.getUsername();
+        
+        JwtBuilder tokenBuilder = Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
-                .signWith(getSigningKey())
-                .compact();
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()));
+        
+        // Add specialty to token if user is staff
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getRole() == Role.MEDICAL_STAFF || 
+                user.getRole() == Role.TRAINER || 
+                user.getRole() == Role.WELLNESS_STAFF) {
+                
+                Optional<Staff> staffOpt = staffRepository.findById(userId);
+                if (staffOpt.isPresent() && staffOpt.get().getSpecialty() != null) {
+                    tokenBuilder.claim("specialty", staffOpt.get().getSpecialty().name());
+                }
+            }
+        }
+
+        return tokenBuilder.signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
     }
     
     public String generateRefreshToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        String userId = userPrincipal.getUsername();
         
-        return Jwts.builder()
+        JwtBuilder tokenBuilder = Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .setId(UUID.randomUUID().toString())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshExpiration()))
-                .signWith(getSigningKey())
-                .compact();
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshExpiration()));
+        
+        // Add specialty to refresh token if user is staff
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getRole() == Role.MEDICAL_STAFF || 
+                user.getRole() == Role.TRAINER || 
+                user.getRole() == Role.WELLNESS_STAFF) {
+                
+                Optional<Staff> staffOpt = staffRepository.findById(userId);
+                if (staffOpt.isPresent() && staffOpt.get().getSpecialty() != null) {
+                    tokenBuilder.claim("specialty", staffOpt.get().getSpecialty().name());
+                }
+            }
+        }
+        
+        return tokenBuilder.signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
     }
     
     public boolean validateToken(String token) {
@@ -107,13 +147,13 @@ public class JwtProvider {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
         
-        UserDetails principal = new User(username, "", authorities);
+        UserDetails principal = new org.springframework.security.core.userdetails.User(username, "", authorities);
         
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
-    
+
     private SecretKey getSigningKey() {
-        byte[] keyBytes = jwtConfig.getSecret().getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtConfig.getSecret());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
