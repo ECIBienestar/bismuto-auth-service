@@ -43,6 +43,6 @@ public class AuthResponseDTO {
     @Schema(description = "User role")
     private Role role;
 
-    @Schema(description = "User specialty (if applicable)", nullable = true)
+    @Schema(description = "User specialty (for staff members only)", nullable = true)
     private Specialty specialty;
 }
