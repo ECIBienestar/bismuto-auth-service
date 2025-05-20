@@ -4,7 +4,11 @@ import edu.eci.cvds.auth.dto.AuthRequestDTO;
 import edu.eci.cvds.auth.dto.AuthResponseDTO;
 import edu.eci.cvds.auth.dto.TokenRefreshRequestDTO;
 import edu.eci.cvds.auth.exception.AuthException;
+import edu.eci.cvds.auth.models.Staff;
 import edu.eci.cvds.auth.models.User;
+import edu.eci.cvds.auth.models.enums.Role;
+import edu.eci.cvds.auth.models.enums.Specialty;
+import edu.eci.cvds.auth.repository.StaffRepository;
 import edu.eci.cvds.auth.repository.UserRepository;
 import edu.eci.cvds.auth.security.JwtProvider;
 import edu.eci.cvds.auth.service.AuthService;
@@ -28,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final StaffRepository staffRepository;
     
     @Override
     @Transactional
@@ -71,6 +76,18 @@ public class AuthServiceImpl implements AuthService {
             
             log.info("User authenticated successfully: {}", username);
             
+            // Check if user is staff to include specialty
+            Specialty specialty = null;
+            if (user.getRole() == Role.MEDICAL_STAFF || 
+                user.getRole() == Role.TRAINER || 
+                user.getRole() == Role.WELLNESS_STAFF) {
+                
+                Optional<Staff> staffOpt = staffRepository.findById(user.getId());
+                if (staffOpt.isPresent()) {
+                    specialty = staffOpt.get().getSpecialty();
+                }
+            }
+
             return AuthResponseDTO.builder()
                     .token(jwt)
                     .refreshToken(refreshToken)
@@ -79,6 +96,7 @@ public class AuthServiceImpl implements AuthService {
                     .fullName(user.getFullName())
                     .email(user.getEmail())
                     .role(user.getRole())
+                    .specialty(specialty)
                     .build();
             
         } catch (BadCredentialsException e) {
@@ -126,6 +144,18 @@ public class AuthServiceImpl implements AuthService {
             
             log.info("Token refreshed successfully for user: {}", userId);
             
+            // Check if user is staff to include specialty
+            Specialty specialty = null;
+            if (user.getRole() == Role.MEDICAL_STAFF || 
+                user.getRole() == Role.TRAINER || 
+                user.getRole() == Role.WELLNESS_STAFF) {
+                
+                Optional<Staff> staffOpt = staffRepository.findById(user.getId());
+                if (staffOpt.isPresent()) {
+                    specialty = staffOpt.get().getSpecialty();
+                }
+            }
+
             return AuthResponseDTO.builder()
                     .token(newToken)
                     .refreshToken(newRefreshToken)
@@ -134,6 +164,7 @@ public class AuthServiceImpl implements AuthService {
                     .fullName(user.getFullName())
                     .email(user.getEmail())
                     .role(user.getRole())
+                    .specialty(specialty)
                     .build();
             
         } catch (Exception e) {

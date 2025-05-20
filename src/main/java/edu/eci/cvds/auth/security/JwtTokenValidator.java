@@ -2,15 +2,14 @@ package edu.eci.cvds.auth.security;
 
 import edu.eci.cvds.auth.config.JwtConfig;
 import edu.eci.cvds.auth.exception.AuthException;
+import edu.eci.cvds.auth.models.enums.Specialty;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -183,7 +182,25 @@ public class JwtTokenValidator {
             throw new AuthException("Error extracting username from token");
         }
     }
-    
+
+    /**
+     * Gets the specialty from the JWT token if present.
+     * 
+     * @param token the JWT token
+     * @return the specialty or null if not present
+     * @throws AuthException if the token is invalid
+     */
+    public Specialty getSpecialty(String token) throws AuthException {
+        try {
+            Claims claims = extractAllClaims(token);
+            String specialtyStr = claims.get("specialty", String.class);
+            return specialtyStr != null ? Specialty.valueOf(specialtyStr) : null;
+        } catch (Exception e) {
+            log.error("Error extracting specialty: {}", e.getMessage());
+            return null;
+        }
+    }
+        
     /**
      * Extracts all claims from a JWT token.
      * 
@@ -204,8 +221,8 @@ public class JwtTokenValidator {
      * @return the secret key
      */
     private SecretKey getSigningKey() {
-        byte[] keyBytes = jwtConfig.getSecret().getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode(jwtConfig.getSecret());
+        return io.jsonwebtoken.security.Keys.hmacShaKeyFor(keyBytes);
     }
     
     /**
@@ -219,6 +236,8 @@ public class JwtTokenValidator {
             Claims claims = extractAllClaims(token);
             boolean isValid = !isTokenExpired(token);
             long remainingMs = getRemainingTimeMs(token);
+            String specialtyStr = claims.get("specialty", String.class);
+            Specialty specialty = specialtyStr != null ? Specialty.valueOf(specialtyStr) : null;
             
             return TokenValidationResult.builder()
                     .valid(isValid)
@@ -228,6 +247,7 @@ public class JwtTokenValidator {
                     .expiresAt(claims.getExpiration())
                     .remainingTimeMs(remainingMs)
                     .humanReadableRemainingTime(getHumanReadableRemainingTime(token))
+                    .specialty(specialty)
                     .build();
                     
         } catch (ExpiredJwtException e) {
@@ -327,8 +347,9 @@ public class JwtTokenValidator {
         private Date issuedAt;
         private Date expiresAt;
         private long remainingTimeMs;
-        private String humanReadableRemainingTime; // AGREGAR esta línea
+        private String humanReadableRemainingTime;
         private String errorMessage;
+        private Specialty specialty;
         
         public long getRemainingTimeSeconds() {
             return remainingTimeMs / 1000;

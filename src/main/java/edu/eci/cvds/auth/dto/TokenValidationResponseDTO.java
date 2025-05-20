@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import edu.eci.cvds.auth.models.enums.Specialty;
+
 /**
  * Data Transfer Object for token validation responses.
  * Contains the validation result and additional information.
@@ -30,6 +32,9 @@ public class TokenValidationResponseDTO {
     
     @Schema(description = "Username extracted from token", example = "123456789")
     private String username;
+
+    @Schema(description = "User specialty (for staff members)", nullable = true, example = "GENERAL_MEDICINE")
+    private Specialty specialty;
     
     @Schema(description = "When the token was issued", example = "2025-05-18T14:28:49")
     private LocalDateTime issuedAt;
