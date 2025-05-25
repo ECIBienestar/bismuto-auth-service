@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error("Authentication Error")
-                .message("Invalid username or password")
+                .message("Correo o contraseña invalido, intente nuevamente")
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
                 
